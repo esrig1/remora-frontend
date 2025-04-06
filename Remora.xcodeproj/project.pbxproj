@@ -1,0 +1,463 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		DB7093302D99C1BB00FD2A5B /* MLX in Frameworks */ = {isa = PBXBuildFile; productRef = DB70932F2D99C1BB00FD2A5B /* MLX */; };
+		DB7093322D99C25200FD2A5B /* MLXFFT in Frameworks */ = {isa = PBXBuildFile; productRef = DB7093312D99C25200FD2A5B /* MLXFFT */; };
+		DB7093342D99C25200FD2A5B /* MLXFast in Frameworks */ = {isa = PBXBuildFile; productRef = DB7093332D99C25200FD2A5B /* MLXFast */; };
+		DB7093362D99C25200FD2A5B /* MLXLinalg in Frameworks */ = {isa = PBXBuildFile; productRef = DB7093352D99C25200FD2A5B /* MLXLinalg */; };
+		DB7093382D99C25200FD2A5B /* MLXNN in Frameworks */ = {isa = PBXBuildFile; productRef = DB7093372D99C25200FD2A5B /* MLXNN */; };
+		DB70933D2D99C55600FD2A5B /* MLXLLM in Frameworks */ = {isa = PBXBuildFile; productRef = DB70933C2D99C55600FD2A5B /* MLXLLM */; };
+		DB70933F2D99C55600FD2A5B /* MLXLMCommon in Frameworks */ = {isa = PBXBuildFile; productRef = DB70933E2D99C55600FD2A5B /* MLXLMCommon */; };
+		DB7093412D99C55600FD2A5B /* MLXMNIST in Frameworks */ = {isa = PBXBuildFile; productRef = DB7093402D99C55600FD2A5B /* MLXMNIST */; };
+		DB7093432D99C55600FD2A5B /* MLXVLM in Frameworks */ = {isa = PBXBuildFile; productRef = DB7093422D99C55600FD2A5B /* MLXVLM */; };
+		DB7093452D99C55600FD2A5B /* StableDiffusion in Frameworks */ = {isa = PBXBuildFile; productRef = DB7093442D99C55600FD2A5B /* StableDiffusion */; };
+		DB70934D2DA344E900FD2A5B /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = DB70934C2DA344E400FD2A5B /* .gitignore */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		DB55773D2D74C4CB009521F0 /* Remora.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Remora.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		DB70934C2DA344E400FD2A5B /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		DB55774F2D7CAAA4009521F0 /* Exceptions for "Remora" folder in "Remora" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = DB55773C2D74C4CB009521F0 /* Remora */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		DB55773F2D74C4CB009521F0 /* Remora */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				DB55774F2D7CAAA4009521F0 /* Exceptions for "Remora" folder in "Remora" target */,
+			);
+			path = Remora;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		DB55773A2D74C4CB009521F0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DB70933D2D99C55600FD2A5B /* MLXLLM in Frameworks */,
+				DB7093342D99C25200FD2A5B /* MLXFast in Frameworks */,
+				DB7093362D99C25200FD2A5B /* MLXLinalg in Frameworks */,
+				DB7093302D99C1BB00FD2A5B /* MLX in Frameworks */,
+				DB7093412D99C55600FD2A5B /* MLXMNIST in Frameworks */,
+				DB7093432D99C55600FD2A5B /* MLXVLM in Frameworks */,
+				DB7093382D99C25200FD2A5B /* MLXNN in Frameworks */,
+				DB7093322D99C25200FD2A5B /* MLXFFT in Frameworks */,
+				DB70933F2D99C55600FD2A5B /* MLXLMCommon in Frameworks */,
+				DB7093452D99C55600FD2A5B /* StableDiffusion in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		DB5577342D74C4CB009521F0 = {
+			isa = PBXGroup;
+			children = (
+				DB70934C2DA344E400FD2A5B /* .gitignore */,
+				DB55773F2D74C4CB009521F0 /* Remora */,
+				DB55773E2D74C4CB009521F0 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		DB55773E2D74C4CB009521F0 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				DB55773D2D74C4CB009521F0 /* Remora.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		DB55773C2D74C4CB009521F0 /* Remora */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DB55774B2D74C4CD009521F0 /* Build configuration list for PBXNativeTarget "Remora" */;
+			buildPhases = (
+				DB5577392D74C4CB009521F0 /* Sources */,
+				DB55773A2D74C4CB009521F0 /* Frameworks */,
+				DB55773B2D74C4CB009521F0 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				DB55773F2D74C4CB009521F0 /* Remora */,
+			);
+			name = Remora;
+			packageProductDependencies = (
+				DB70932F2D99C1BB00FD2A5B /* MLX */,
+				DB7093312D99C25200FD2A5B /* MLXFFT */,
+				DB7093332D99C25200FD2A5B /* MLXFast */,
+				DB7093352D99C25200FD2A5B /* MLXLinalg */,
+				DB7093372D99C25200FD2A5B /* MLXNN */,
+				DB70933C2D99C55600FD2A5B /* MLXLLM */,
+				DB70933E2D99C55600FD2A5B /* MLXLMCommon */,
+				DB7093402D99C55600FD2A5B /* MLXMNIST */,
+				DB7093422D99C55600FD2A5B /* MLXVLM */,
+				DB7093442D99C55600FD2A5B /* StableDiffusion */,
+			);
+			productName = Remora;
+			productReference = DB55773D2D74C4CB009521F0 /* Remora.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		DB5577352D74C4CB009521F0 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1610;
+				LastUpgradeCheck = 1610;
+				TargetAttributes = {
+					DB55773C2D74C4CB009521F0 = {
+						CreatedOnToolsVersion = 16.1;
+					};
+				};
+			};
+			buildConfigurationList = DB5577382D74C4CB009521F0 /* Build configuration list for PBXProject "Remora" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = DB5577342D74C4CB009521F0;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				DB70932E2D99C1BB00FD2A5B /* XCRemoteSwiftPackageReference "mlx-swift" */,
+				DB70933B2D99C55600FD2A5B /* XCRemoteSwiftPackageReference "mlx-swift-examples" */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = DB55773E2D74C4CB009521F0 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				DB55773C2D74C4CB009521F0 /* Remora */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		DB55773B2D74C4CB009521F0 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DB70934D2DA344E900FD2A5B /* .gitignore in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		DB5577392D74C4CB009521F0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		DB5577492D74C4CD009521F0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.1;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		DB55774A2D74C4CD009521F0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.1;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		DB55774C2D74C4CD009521F0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"Remora/Preview Content\"";
+				DEVELOPMENT_TEAM = 6KS437K389;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Remora/Info.plist;
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "We need access to your microphone to record audio.";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = Josh.Remora;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		DB55774D2D74C4CD009521F0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"Remora/Preview Content\"";
+				DEVELOPMENT_TEAM = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Remora/Info.plist;
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "We need access to your microphone to record audio.";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = Josh.Remora;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		DB5577382D74C4CB009521F0 /* Build configuration list for PBXProject "Remora" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DB5577492D74C4CD009521F0 /* Debug */,
+				DB55774A2D74C4CD009521F0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		DB55774B2D74C4CD009521F0 /* Build configuration list for PBXNativeTarget "Remora" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DB55774C2D74C4CD009521F0 /* Debug */,
+				DB55774D2D74C4CD009521F0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		DB70932E2D99C1BB00FD2A5B /* XCRemoteSwiftPackageReference "mlx-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/ml-explore/mlx-swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.23.1;
+			};
+		};
+		DB70933B2D99C55600FD2A5B /* XCRemoteSwiftPackageReference "mlx-swift-examples" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/ml-explore/mlx-swift-examples/";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.21.2;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		DB70932F2D99C1BB00FD2A5B /* MLX */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = DB70932E2D99C1BB00FD2A5B /* XCRemoteSwiftPackageReference "mlx-swift" */;
+			productName = MLX;
+		};
+		DB7093312D99C25200FD2A5B /* MLXFFT */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = DB70932E2D99C1BB00FD2A5B /* XCRemoteSwiftPackageReference "mlx-swift" */;
+			productName = MLXFFT;
+		};
+		DB7093332D99C25200FD2A5B /* MLXFast */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = DB70932E2D99C1BB00FD2A5B /* XCRemoteSwiftPackageReference "mlx-swift" */;
+			productName = MLXFast;
+		};
+		DB7093352D99C25200FD2A5B /* MLXLinalg */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = DB70932E2D99C1BB00FD2A5B /* XCRemoteSwiftPackageReference "mlx-swift" */;
+			productName = MLXLinalg;
+		};
+		DB7093372D99C25200FD2A5B /* MLXNN */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = DB70932E2D99C1BB00FD2A5B /* XCRemoteSwiftPackageReference "mlx-swift" */;
+			productName = MLXNN;
+		};
+		DB70933C2D99C55600FD2A5B /* MLXLLM */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = DB70933B2D99C55600FD2A5B /* XCRemoteSwiftPackageReference "mlx-swift-examples" */;
+			productName = MLXLLM;
+		};
+		DB70933E2D99C55600FD2A5B /* MLXLMCommon */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = DB70933B2D99C55600FD2A5B /* XCRemoteSwiftPackageReference "mlx-swift-examples" */;
+			productName = MLXLMCommon;
+		};
+		DB7093402D99C55600FD2A5B /* MLXMNIST */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = DB70933B2D99C55600FD2A5B /* XCRemoteSwiftPackageReference "mlx-swift-examples" */;
+			productName = MLXMNIST;
+		};
+		DB7093422D99C55600FD2A5B /* MLXVLM */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = DB70933B2D99C55600FD2A5B /* XCRemoteSwiftPackageReference "mlx-swift-examples" */;
+			productName = MLXVLM;
+		};
+		DB7093442D99C55600FD2A5B /* StableDiffusion */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = DB70933B2D99C55600FD2A5B /* XCRemoteSwiftPackageReference "mlx-swift-examples" */;
+			productName = StableDiffusion;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = DB5577352D74C4CB009521F0 /* Project object */;
+}
