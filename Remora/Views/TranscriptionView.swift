@@ -113,13 +113,8 @@ struct TranscriptionView: View {
         
         Task {
             do {
-                // Call Diarization API to transcribe the audio
-                print("calling")
-                let response = try await Diarization.shared.startDiarization(audioData: audioData)
-                
-                // Handle the transcription response (converting to a string for now)
-                let transcribedText = response.transcription.map { $0.text }.joined(separator: " ")
-                transcriptionResult = transcribedText
+                let response = try await Pipelines.createDiarizationFromAudioFile(audioData: audioData)
+                transcriptionResult = response
             } catch {
                 errorMessage = error.localizedDescription
             }

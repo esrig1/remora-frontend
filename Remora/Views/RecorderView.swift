@@ -1,9 +1,11 @@
 import SwiftUI
 
 struct RecorderView: View {
-    @Binding var recordings: [String]  // Use Binding to share recordings with ContentView
-    
-    @StateObject private var recorder = RecorderViewModel()  // ViewModel to handle recording logic
+    // Use Binding to receive and update recordings in the parent view
+    @Binding var recordings: [String]
+
+    // ViewModel to handle recording logic and data
+    @StateObject private var recorder = RecorderViewModel()
 
     var body: some View {
         VStack {
@@ -32,23 +34,40 @@ struct RecorderView: View {
                 .font(.headline)
                 .padding(.top)
 
-            List(recorder.recordings, id: \.self) { recording in
-                Text(recording)
+            // Use ForEach inside List to enable .onDelete
+            List {
+                ForEach(recorder.recordings, id: \.self) { recording in
+                    Text(recording)
+                }
+                // Add the .onDelete modifier here
+                .onDelete(perform: deleteRecording) // Calls the helper function below
             }
-
-            // Update the parent view's recordings when the recorder's recordings change
+            // This ensures the parent view's @Binding gets updated whenever
+            // the recorder's list changes (including after deletions)
             .onChange(of: recorder.recordings) { newRecordings in
                 recordings = newRecordings
             }
         }
         .onAppear {
-            recorder.loadRecordings()  // Load recordings on launch
+            // Load recordings when the view appears
+            recorder.loadRecordings()
+            // Sync initial recordings to the binding
+            recordings = recorder.recordings
         }
+    }
+
+    /// Helper function to call the ViewModel's delete method.
+    private func deleteRecording(at offsets: IndexSet) {
+        print("Swipe to delete action triggered for offsets: \(offsets)")
+        recorder.deleteRecording(at: offsets)
     }
 }
 
 struct RecorderView_Previews: PreviewProvider {
+    // Example binding for previews
+    @State static var previewRecordings = ["Recording 1.m4a", "Recording 2.m4a", "rec_20231027_103000_part0.m4a"]
+
     static var previews: some View {
-        RecorderView(recordings: .constant(["Recording 1", "Recording 2"]))  // Pass some dummy data for previews
+        RecorderView(recordings: $previewRecordings)
     }
 }
