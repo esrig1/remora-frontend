@@ -22,6 +22,10 @@ struct ContentView: View {
                 .tabItem {
                     Label("Transcription", systemImage: "person.fill")
                 }
+            FileView()
+                .tabItem {
+                    Label("Files", systemImage: "folder.fill")
+                }
         }
     }
 }

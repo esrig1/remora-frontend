@@ -1,29 +1,31 @@
 import Foundation
 import AVFoundation
 import SwiftUI
+import SoundAnalysis
 
-// Inherit from NSObject to use AVAudioRecorderDelegate
+// Assume Pipelines struct/class with the static transcription function exists
+// struct Pipelines {
+//     static func createTranscriptionFromAudioFile(audioData: Data) async throws -> String { ... }
+// }
+
+/// ViewModel responsible for managing audio recording, segmentation, and file handling.
+/// It conforms to `ObservableObject` for SwiftUI integration and `AVAudioRecorderDelegate`
+/// to handle recording events.
 class RecorderViewModel: NSObject, ObservableObject, AVAudioRecorderDelegate {
     private var audioRecorder: AVAudioRecorder?
     @Published var isRecording = false
-    @Published var recordings: [String] = [] // Stores the filenames
+    @Published var recordings: [String] = []
 
     private var segmentTimer: Timer?
-    private let segmentDuration: TimeInterval = 15 // Duration of each segment
+    private let segmentDuration: TimeInterval = 30
 
-    // Flags to manage state transitions
     private var isStoppingForSegmentRotation = false
     private var isManuallyStopping = false
 
-    // Date Formatter for precise filenames including milliseconds
     private let filenameFormatter: DateFormatter = {
         let formatter = DateFormatter()
-        // Format: YearMonthDay_HourMinuteSecond_Millisecond
         formatter.dateFormat = "yyyy-MM-dd_HH-mm-ss"
-        // Using POSIX locale prevents unexpected changes based on user's region
         formatter.locale = Locale(identifier: "en_US_POSIX")
-        // Using UTC can be helpful for consistency if files are shared across timezones
-        // formatter.timeZone = TimeZone(secondsFromGMT: 0) // Optional: Uncomment for UTC
         return formatter
     }()
 
@@ -35,63 +37,66 @@ class RecorderViewModel: NSObject, ObservableObject, AVAudioRecorderDelegate {
     }
 
     // MARK: - Audio Session Setup
-    /// Configures the audio session for recording and playback.
+
+    /// Configures and prepares the shared `AVAudioSession` for recording.
     private func setupAudioSession() {
         let audioSession = AVAudioSession.sharedInstance()
         do {
             try audioSession.setCategory(.playAndRecord, mode: .default, options: [.defaultToSpeaker, .allowBluetooth])
-            try audioSession.setActive(true)
-            print("Audio session setup complete.")
+            print("Audio session category setup complete.")
         } catch {
             print("Audio session setup failed: \(error.localizedDescription)")
         }
     }
 
     // MARK: - Recording Control
-    /// Starts the recording process, creating segmented audio files.
-    func startRecording() { // Removed fileName parameter as it's no longer used for base name
+
+    /// Starts a new recording session, creating segmented audio files.
+    /// Activates the audio session if not already active.
+    func startRecording() {
         do {
             try AVAudioSession.sharedInstance().setActive(true)
+            print("Audio session activated for recording.")
         } catch {
-            print("Failed to activate audio session: \(error.localizedDescription)")
+            print("Failed to activate audio session for recording: \(error.localizedDescription)")
             return
         }
-
-        // Reset state flags
         isManuallyStopping = false
         isStoppingForSegmentRotation = false
-        // baseFileName and currentSegmentIndex are no longer needed for naming
-
         print("Starting recording session...")
-        startNewSegment() // Start the first segment
+        startNewSegment()
 
-        // Invalidate old timer and start new one
         segmentTimer?.invalidate()
         segmentTimer = Timer.scheduledTimer(withTimeInterval: segmentDuration, repeats: true) { [weak self] _ in
             self?.rotateSegment()
         }
-
-        // Update UI
         DispatchQueue.main.async {
             self.isRecording = true
         }
     }
 
-    /// Called by the timer to stop the current segment and start the next.
+    /// Called by the segment timer to initiate the rotation to a new segment file.
     private func rotateSegment() {
-        guard audioRecorder != nil else { return } // Only rotate if currently recording
+        guard audioRecorder != nil else {
+            print("Rotate segment called but recorder is nil. Stopping timer.")
+            segmentTimer?.invalidate()
+            segmentTimer = nil
+            return
+        }
         print("Timer fired: Rotating segment")
         isStoppingForSegmentRotation = true
-        stopCurrentRecording() // Delegate will handle starting the next segment
+        stopCurrentRecording()
     }
 
-    /// Initializes and starts recording for a new audio segment file with a precise timestamp name.
+    /// Initializes and starts recording for a new audio segment file using a timestamped name.
     private func startNewSegment() {
-        // Generate filename based on the *exact* current time
         let timestamp = filenameFormatter.string(from: Date())
-        let segmentName = "\(timestamp).m4a" // Use timestamp directly as filename
-
-        let url = generateAudioFileURL(fileName: segmentName)
+        let segmentName = "\(timestamp).m4a"
+        guard let url = generateAudioFileURL(fileName: segmentName) else {
+            print("Error: Could not generate URL for new segment.")
+            stopRecording()
+            return
+        }
         print("Starting segment recording: \(url.lastPathComponent)")
 
         let settings: [String: Any] = [
@@ -102,142 +107,168 @@ class RecorderViewModel: NSObject, ObservableObject, AVAudioRecorderDelegate {
         ]
 
         do {
-            // Ensure previous recorder is stopped and released
-            // audioRecorder?.stop() // Should be handled by stopCurrentRecording + delegate
-            // audioRecorder = nil // Delegate sets this to nil
+             _ = getRecordingsDirectory()
 
-            // Create and configure the new recorder instance
             audioRecorder = try AVAudioRecorder(url: url, settings: settings)
-            audioRecorder?.delegate = self // Set delegate *before* recording
+            audioRecorder?.delegate = self
+            audioRecorder?.isMeteringEnabled = true
             audioRecorder?.prepareToRecord()
 
-            // Start recording
             if audioRecorder?.record() == true {
                  print("Segment recording started successfully for \(segmentName).")
-                 // No need to increment segment index anymore
             } else {
                  print("Failed start recording segment \(segmentName).")
-                 stopRecording() // Stop the whole process if a segment fails to start
+                 try? FileManager.default.removeItem(at: url)
+                 stopRecording()
             }
-
         } catch {
             print("Failed create recorder for segment \(segmentName): \(error.localizedDescription)")
-            stopRecording() // Stop the whole process on error
+            stopRecording()
         }
     }
 
-    /// Initiates the stopping process for the currently active recorder.
+    /// Initiates the stopping process for the currently active audio recorder instance.
     private func stopCurrentRecording() {
-        print("Requesting stop for current recording (if active).")
-        audioRecorder?.stop() // Tell the recorder to stop; delegate handles completion
+        guard let recorder = audioRecorder, recorder.isRecording else {
+            print("Stop current recording requested, but recorder is not active or nil.")
+            return
+        }
+        print("Requesting stop for current recording: \(recorder.url.lastPathComponent)")
+        recorder.stop()
     }
 
-    /// Manually stops the entire recording process and invalidates the timer.
+    /// Manually stops the entire recording process, invalidates the timer, and cleans up.
     func stopRecording() {
         print("Manual stop requested.")
-        // Check if we are actually recording or in the process of stopping
         guard isRecording || audioRecorder != nil else {
             print("Already stopped or not recording.")
             return
         }
 
-        isManuallyStopping = true // Signal that this is a final stop requested by user
-        isStoppingForSegmentRotation = false // Ensure rotation flag is off
+        isManuallyStopping = true
+        isStoppingForSegmentRotation = false
 
-        // Invalidate timer first so delegate knows it's not a rotation
         segmentTimer?.invalidate()
         segmentTimer = nil
         print("Segment timer stopped.")
 
-        // Initiate the stop of the current recording file
         stopCurrentRecording()
-        // The delegate method will handle the final state updates (isRecording = false, loadRecordings)
     }
 
     // MARK: - AVAudioRecorderDelegate
 
-    /// Called by the system when the audio recorder finishes recording a file.
+    /// Delegate method called when a recording segment finishes (either successfully or due to an error).
+    /// Handles state transitions for segment rotation or final stop, and triggers processing for successful segments.
+    /// - Parameters:
+    ///   - recorder: The `AVAudioRecorder` instance that finished.
+    ///   - flag: `true` if the recording saved successfully, `false` otherwise.
     func audioRecorderDidFinishRecording(_ recorder: AVAudioRecorder, successfully flag: Bool) {
         let fileName = recorder.url.lastPathComponent
+        let finishedUrl = recorder.url
         print("Delegate: Finished recording \(fileName). Success: \(flag)")
 
-        // Release the finished recorder instance
         self.audioRecorder = nil
 
         if !flag {
             print("Segment \(fileName) failed to save.")
-            // Consider how to handle segment save failure - maybe stop entire recording?
+            try? FileManager.default.removeItem(at: finishedUrl)
+
         } else {
             print("Segment \(fileName) saved successfully.")
-            // Reload recordings immediately after a successful save if you want the list
-            // to update during recording (optional, might have performance impact)
-            // DispatchQueue.main.async { self.loadRecordings() }
+
+            Task {
+                await handleSuccessfulSegmentFinish(filename: fileName, fileURL: finishedUrl)
+            }
+
+             DispatchQueue.main.async { self.loadRecordings() }
         }
 
-        // --- State transition logic ---
-
-        // Case 1: We stopped to rotate segments, and it was successful
         if isStoppingForSegmentRotation && flag {
-            isStoppingForSegmentRotation = false // Reset flag
+            isStoppingForSegmentRotation = false
             print("Delegate: Rotation successful, starting next segment.")
-            startNewSegment() // Start the next part
-        }
-        // Case 2: We stopped manually, OR a segment failed saving, OR rotation failed
-        else if isManuallyStopping || !flag {
+            startNewSegment()
+        } else if isManuallyStopping || !flag {
             print("Delegate: Manual stop or failure detected. Finalizing.")
-            isManuallyStopping = false // Reset flags
+            isManuallyStopping = false
             isStoppingForSegmentRotation = false
 
-            // Ensure timer is definitely stopped
             segmentTimer?.invalidate()
             segmentTimer = nil
 
-            // Update UI state and reload the final list
             DispatchQueue.main.async {
                 self.isRecording = false
-                self.loadRecordings() // Load the complete list now
             }
+
+            deactivateAudioSession()
         }
-        // Note: If isStoppingForSegmentRotation is true but flag is false, it falls into the second case.
     }
 
-    /// Called by the system if an encoding error occurs during recording.
+    /// Delegate method called if an encoding error occurs during recording.
+    /// Treats this as a failure requiring a full stop.
+    /// - Parameters:
+    ///   - recorder: The recorder instance where the error occurred.
+    ///   - error: An optional `Error` object describing the encoding issue.
     func audioRecorderEncodeErrorDidOccur(_ recorder: AVAudioRecorder, error: Error?) {
-        print("Recorder encode error: \(error?.localizedDescription ?? "Unknown")")
-        isStoppingForSegmentRotation = false // Reset flag
-        stopRecording() // Treat encoding errors as needing a full stop
+        let fileName = recorder.url.lastPathComponent
+        print("Recorder encode error for \(fileName): \(error?.localizedDescription ?? "Unknown")")
+
+        isStoppingForSegmentRotation = false
+        try? FileManager.default.removeItem(at: recorder.url)
+        stopRecording()
     }
 
+    // MARK: - Segment Handling
+
+    /// Processes a successfully recorded audio segment asynchronously.
+    /// Reads the audio data and calls the transcription service.
+    /// - Parameter filename: The name of the audio file segment.
+    /// - Parameter fileURL: The `URL` of the audio file segment.
+    private func handleSuccessfulSegmentFinish(filename: String, fileURL: URL) async {
+        print("Hello World - Segment finished: \(filename)")
+
+        do {
+            print("handleSuccessfulSegmentFinish: Reading data from \(fileURL.path)...")
+            let audioData = try Data(contentsOf: fileURL)
+            print("handleSuccessfulSegmentFinish: Read \(audioData.count) bytes.")
+
+            print("handleSuccessfulSegmentFinish: Calling TranscriptionService...")
+            let transcriptionResult = try await Pipelines.createTranscriptionFromAudioFile(audioData: audioData, fileUrl: fileURL)
+            print("handleSuccessfulSegmentFinish: Transcription successful for \(filename): \"\(transcriptionResult)\"")
+
+        } catch {
+            print("handleSuccessfulSegmentFinish: Error processing \(filename): \(error.localizedDescription)")
+        }
+    }
 
     // MARK: - File Management
 
-    /// Scans the recordings directory and updates the `recordings` published property.
+    /// Scans the recordings directory and updates the `recordings` published property on the main thread.
     func loadRecordings() {
         let fileManager = FileManager.default
         guard let recordingsDirectory = getRecordingsDirectory() else { return }
 
         do {
-            // Get filenames, filter, and sort (descending for most recent first)
             let files = try fileManager.contentsOfDirectory(atPath: recordingsDirectory.path)
-                .filter { $0.hasSuffix(".m4a") && $0.first?.isNumber ?? false } // Filter for .m4a starting with a digit (our timestamp format)
-                .sorted(by: >) // Sort descending by name (time)
+                .filter { $0.hasSuffix(".m4a") && ($0.first?.isNumber ?? false) }
+                .sorted(by: >)
 
-            // Update the UI
             DispatchQueue.main.async {
-                self.recordings = files
+                if self.recordings != files {
+                    self.recordings = files
+                    print("Loaded/Updated \(files.count) recordings.")
+                }
             }
-            print("Loaded \(files.count) recordings.")
         } catch {
             print("Failed to load recordings: \(error.localizedDescription)")
             DispatchQueue.main.async {
-                self.recordings = [] // Clear list on error
+                self.recordings = []
             }
         }
     }
 
-    // Removed generateTimestampedBaseName() as it's no longer used
-
-    /// Returns the URL for the 'Recordings' directory in Documents, creating it if necessary.
+    /// Returns the URL for the 'Recordings' subdirectory within the app's Documents directory.
+    /// Creates the directory if it doesn't exist.
+    /// - Returns: The `URL` of the recordings directory, or `nil` on failure.
     private func getRecordingsDirectory() -> URL? {
         let fileManager = FileManager.default
         do {
@@ -245,26 +276,30 @@ class RecorderViewModel: NSObject, ObservableObject, AVAudioRecorderDelegate {
             let recordingsDirectory = documentsPath.appendingPathComponent("Recordings")
 
             if !fileManager.fileExists(atPath: recordingsDirectory.path) {
+                print("Creating Recordings directory at: \(recordingsDirectory.path)")
                 try fileManager.createDirectory(at: recordingsDirectory, withIntermediateDirectories: true, attributes: nil)
-                print("Created Recordings directory.")
             }
             return recordingsDirectory
         } catch {
-            print("Could not get/create Recordings directory: \(error.localizedDescription)")
+            print("Could not get or create Recordings directory: \(error.localizedDescription)")
             return nil
         }
     }
 
     /// Constructs the full file URL for a given recording file name within the recordings directory.
-    private func generateAudioFileURL(fileName: String) -> URL {
-        // Use guard let or force unwrap if certain directory exists
+    /// - Parameter fileName: The base name of the file (e.g., "timestamp.m4a").
+    /// - Returns: The full `URL` for the file, or `nil` if the directory cannot be accessed.
+    private func generateAudioFileURL(fileName: String) -> URL? {
         guard let directory = getRecordingsDirectory() else {
-             fatalError("Could not access recordings directory") // Or handle more gracefully
+             print("Error: Cannot get recordings directory to generate file URL.")
+             return nil
         }
         return directory.appendingPathComponent(fileName)
     }
 
-    /// Deletes recordings at specified offsets from the list and file system.
+    /// Deletes recordings at specified offsets from the `recordings` array and the file system.
+    /// Performs file deletion on a background thread.
+    /// - Parameter offsets: An `IndexSet` containing the indices of the recordings to delete.
     func deleteRecording(at offsets: IndexSet) {
         let fileManager = FileManager.default
         guard let recordingsDirectory = getRecordingsDirectory() else {
@@ -272,27 +307,72 @@ class RecorderViewModel: NSObject, ObservableObject, AVAudioRecorderDelegate {
             return
         }
 
-        let filenamesToDelete = offsets.map { self.recordings[$0] }
+        let filenamesToDelete = offsets.compactMap { index -> String? in
+            guard index < self.recordings.count else { return nil }
+            return self.recordings[index]
+        }
 
-        for filename in filenamesToDelete {
-            let fileURL = recordingsDirectory.appendingPathComponent(filename)
-            print("Attempting to delete file: \(fileURL.path)")
-            do {
-                try fileManager.removeItem(at: fileURL)
-                print("Successfully deleted file: \(filename)")
+        guard !filenamesToDelete.isEmpty else { return }
 
-                // Remove from the @Published array AFTER successful file deletion
-                DispatchQueue.main.async {
-                    // Find index again in case array was mutated elsewhere (safer)
-                    if let indexToRemove = self.recordings.firstIndex(of: filename) {
-                        self.recordings.remove(at: indexToRemove)
-                        print("Removed '\(filename)' from recordings array.")
-                    }
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            var deletedFilenamesOnWorker: [String] = []
+            for filename in filenamesToDelete {
+                let fileURL = recordingsDirectory.appendingPathComponent(filename)
+                print("Attempting to delete file: \(fileURL.path)")
+                do {
+                    try fileManager.removeItem(at: fileURL)
+                    print("Successfully deleted file: \(filename)")
+                    deletedFilenamesOnWorker.append(filename)
+                } catch {
+                    print("Error deleting file '\(filename)': \(error.localizedDescription)")
                 }
-            } catch {
-                print("Error deleting file '\(filename)': \(error.localizedDescription)")
-                // Maybe add user feedback here if deletion fails
+            }
+
+            DispatchQueue.main.async {
+                guard let self = self else { return }
+                self.recordings.removeAll { filename in
+                    deletedFilenamesOnWorker.contains(filename)
+                }
+                 if !deletedFilenamesOnWorker.isEmpty {
+                    print("Removed \(deletedFilenamesOnWorker.count) items from recordings array.")
+                 }
             }
         }
+    }
+
+    /// Returns the full URL for a given filename within the recordings directory.
+    /// - Parameter filename: The name of the recording file.
+    /// - Returns: The full `URL` or `nil` if the directory cannot be accessed.
+    func getURLForFilename(_ filename: String) -> URL? {
+        return getRecordingsDirectory()?.appendingPathComponent(filename)
+    }
+
+    // MARK: - Session Deactivation
+
+    /// Deactivates the shared audio session, notifying other apps.
+    private func deactivateAudioSession() {
+        print("Attempting to deactivate audio session...")
+        let audioSession = AVAudioSession.sharedInstance()
+        guard audioSession.category == .playAndRecord else {
+            print("Audio session category is not playAndRecord; skipping deactivation.")
+            return
+        }
+        do {
+            try audioSession.setActive(false, options: .notifyOthersOnDeactivation)
+            print("Audio session deactivated successfully.")
+        } catch {
+            print("Failed to deactivate audio session: \(error.localizedDescription)")
+        }
+    }
+
+
+    /// Cleans up resources like the timer and audio recorder when the ViewModel is deallocated.
+    deinit {
+        print("RecorderViewModel deinit")
+        segmentTimer?.invalidate()
+        if audioRecorder?.isRecording ?? false {
+            audioRecorder?.stop()
+        }
+        audioRecorder = nil
     }
 }

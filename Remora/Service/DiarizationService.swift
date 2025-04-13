@@ -24,17 +24,17 @@ struct DiarizationService {
     /// - Returns: A single string containing the text from all transcription parts, joined by spaces.
     /// - Throws: An error if the underlying diarization process fails.
     func getTranscriptionText(audioData: Data) async throws -> String {
-        var responseBuilder: String = ""
         let response = try await Diarization.shared.startDiarization(audioData: audioData)
+        return formatTranscriptionText(response: response)
+    }
+    
+    private func formatTranscriptionText(response: DiarizationResponse) -> String {
+        var responseBuilder: String = ""
         let segments: [Transcription] = response.transcription
         
         for segment in segments {
             responseBuilder += (segment.speaker + ": " + segment.text + "\n")
         }
         return responseBuilder
-    }
-    
-    func formatTranscriptionText(response: DiarizationResponse) -> String {
-        return ""
     }
 }

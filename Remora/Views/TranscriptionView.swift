@@ -113,7 +113,7 @@ struct TranscriptionView: View {
         
         Task {
             do {
-                let response = try await Pipelines.createDiarizationFromAudioFile(audioData: audioData)
+                let response = try await Pipelines.createTranscriptionFromAudioFile(audioData: audioData)
                 transcriptionResult = response
             } catch {
                 errorMessage = error.localizedDescription
