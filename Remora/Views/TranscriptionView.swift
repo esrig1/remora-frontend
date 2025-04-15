@@ -106,6 +106,8 @@ struct TranscriptionView: View {
             return
         }
         
+        let audioUrl = getAudioFileURL(for: recording)
+        
         // Start transcription using Diarization class
         isTranscribing = true
         errorMessage = nil
@@ -113,7 +115,7 @@ struct TranscriptionView: View {
         
         Task {
             do {
-                let response = try await Pipelines.createTranscriptionFromAudioFile(audioData: audioData)
+                let response = try await Pipelines.createTranscriptionFromAudioFile(audioData: audioData, fileUrl: audioUrl)
                 transcriptionResult = response
             } catch {
                 errorMessage = error.localizedDescription

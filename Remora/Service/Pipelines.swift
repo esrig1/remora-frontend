@@ -10,19 +10,16 @@ enum Pipelines {
     /// - Returns: The transcribed text as a String, or nil if an error occurred.
     static func createTranscriptionFromAudioFile(audioData: Data, fileUrl: URL) async throws -> String {
         let diarizationService = DiarizationService()
-        let llmService = await LLMService()
         let conversationStorageService = ConversationStorageService()
         let audioAnalysisService = AudioAnalysisService()
         
-        if(await audioAnalysisService.isHumanSpeech(fileUrl: <#T##URL#>)) {
+        if(await audioAnalysisService.isHumanSpeech(fileUrl: fileUrl)) {
             print("speech found")
         } else {
             return ""
         }
 
         let transcription = try await diarizationService.getTranscriptionText(audioData: audioData)
-        
-        let prompt = "Summarize the following conversation:\n\n" + transcription
                 
         conversationStorageService.addConversationToFile(
             conversationText: transcription,
